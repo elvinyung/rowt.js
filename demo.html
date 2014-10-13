@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>rowt.js Demo</title>
+    <meta content="">
+    <style></style>
+
+    <script src="rowt.js"></script>
+    <script type="text/javascript">
+      var simpleAlert = function(routeParams) {
+        alert("you're at " + location.hash + "!");
+      };
+
+      var showIdAlert = function(routeParams) {
+        alert("your id was " + routeParams.id);
+      }
+
+      var routes = rowt({
+        '/test': simpleAlert,
+        '/test/:id': showIdAlert
+      });
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#/test">test</a></li>
+      <li><a href="#/test/23">23</a></li>
+    </ul>
+  </body>
+</html>
