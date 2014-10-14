@@ -45,10 +45,26 @@ var rowt = function(routes) {
     for (token in routeTokens)
     {
       token = routeTokens[token];
-      if (token[0] == ':')
+      if (token.indexOf(':') != -1)
       {
-        routeParamNames.push(token.substring(1));
-        routeRegex += '/' + '(.+)';
+        token = token.split(':');
+        var paramType = token[0];
+        var paramName = token[1];
+        routeParamNames.push(paramName);
+        
+        routeRegex += '/';
+        if (paramType == 'int')
+        {
+           routeRegex += '(\d+)';
+        }
+        else if (paramType == 'float')
+        {
+          routeRegex += '(\d+\.\d+)';
+        }
+        else
+        {
+          routeRegex += '(.+)';
+        }
       }
       else if (!token)
       {
