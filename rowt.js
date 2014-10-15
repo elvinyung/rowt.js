@@ -2,13 +2,25 @@
 
 var routeObject = {};
 
+var typeConversionFns = {
+  'int': parseInt,
+  'float': parseFloat,
+  'bool': function(str) {
+    return (str == 'true');
+  },
+  'any': function(str) {
+    return str;
+  }
+}
+
 var routeHandler = function() {
-  urlHash = location.hash.substring(1);
+  urlHash = location.hash.substring(1).trim();
 
   for (routeRegex in routeObject)
   {
     var routeParamNames = routeObject[routeRegex][0];
-    var routeAction = routeObject[routeRegex][1]
+    var routeParamTypes = routeObject[routeRegex][1];
+    var routeAction = routeObject[routeRegex][2];
     var routeRegex = new RegExp(routeRegex);
 
     var routeMatch = routeRegex.exec(urlHash);
@@ -19,7 +31,7 @@ var routeHandler = function() {
       var routeParams = {};
       for (index in routeParamNames)
       {
-        routeParams[routeParamNames[index]] = routeMatch[index];
+        routeParams[routeParamNames[index]] = typeConversionFns[routeParamTypes[index]](routeMatch[index]);
       }
 
       routeAction(routeParams);
@@ -38,8 +50,9 @@ var rowt = function(routes) {
   // convert each route rule into a regex
   for (route in routes)
   {
-    var routeRegex = '';
+    var routeRegex = '^';
     var routeParamNames = [];
+    var routeParamTypes = [];
 
     var routeTokens = route.split('/');
     for (token in routeTokens)
@@ -51,19 +64,20 @@ var rowt = function(routes) {
         var paramType = token[0];
         var paramName = token[1];
         routeParamNames.push(paramName);
+        routeParamTypes.push(paramType || 'any');
         
-        routeRegex += '/';
+        routeRegex += '\/';
         if (paramType == 'int')
         {
-           routeRegex += '(\d+)';
+           routeRegex += '(\\d+)';
         }
         else if (paramType == 'float')
         {
-          routeRegex += '(\d+\.\d+)';
+          routeRegex += '(\\d+\.\\d+)';
         }
         else
         {
-          routeRegex += '(.+)';
+          routeRegex += '([^\/]+)';
         }
       }
       else if (!token)
@@ -72,12 +86,12 @@ var rowt = function(routes) {
       }
       else
       {
-        routeRegex += '/' + token;
+        routeRegex += '\/' + token;
       }
     }
     routeRegex += '$';
 
-    routeObject[routeRegex] = [routeParamNames, routes[route]];
+    routeObject[routeRegex] = [routeParamNames, routeParamTypes, routes[route]];
   }
 
   window.onhashchange = routeHandler;
