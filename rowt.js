@@ -43,6 +43,51 @@ var routeHandler = function() {
 
 };
 
+var addRoute = function(route, routeAction) {
+  var routeRegex = '^';
+  var routeParamNames = [];
+  var routeParamTypes = [];
+
+  var routeTokens = route.split('/');
+  for (token in routeTokens)
+  {
+    token = routeTokens[token];
+    if (token.indexOf(':') != -1)
+    {
+      token = token.split(':');
+      var paramType = token[0];
+      var paramName = token[1];
+      routeParamNames.push(paramName);
+      routeParamTypes.push(paramType || 'any');
+      
+      routeRegex += '\/';
+      if (paramType == 'int')
+      {
+         routeRegex += '(\\d+)';
+      }
+      else if (paramType == 'float')
+      {
+        routeRegex += '(\\d+\.\\d+)';
+      }
+      else
+      {
+        routeRegex += '([^\/]+)';
+      }
+    }
+    else if (!token)
+    {
+
+    }
+    else
+    {
+      routeRegex += '\/' + token;
+    }
+  }
+  routeRegex += '$';
+
+  routeObject[routeRegex] = [routeParamNames, routeParamTypes, routeAction];
+}
+
 var rowt = function(routes) {
   if (!("onhashchange" in window))
   {
@@ -52,48 +97,7 @@ var rowt = function(routes) {
   // convert each route rule into a regex
   for (route in routes)
   {
-    var routeRegex = '^';
-    var routeParamNames = [];
-    var routeParamTypes = [];
-
-    var routeTokens = route.split('/');
-    for (token in routeTokens)
-    {
-      token = routeTokens[token];
-      if (token.indexOf(':') != -1)
-      {
-        token = token.split(':');
-        var paramType = token[0];
-        var paramName = token[1];
-        routeParamNames.push(paramName);
-        routeParamTypes.push(paramType || 'any');
-        
-        routeRegex += '\/';
-        if (paramType == 'int')
-        {
-           routeRegex += '(\\d+)';
-        }
-        else if (paramType == 'float')
-        {
-          routeRegex += '(\\d+\.\\d+)';
-        }
-        else
-        {
-          routeRegex += '([^\/]+)';
-        }
-      }
-      else if (!token)
-      {
-
-      }
-      else
-      {
-        routeRegex += '\/' + token;
-      }
-    }
-    routeRegex += '$';
-
-    routeObject[routeRegex] = [routeParamNames, routeParamTypes, routes[route]];
+    addRoute(route, routes[route]);
   }
 
   window.onhashchange = routeHandler;
