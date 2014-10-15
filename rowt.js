@@ -31,7 +31,9 @@ var routeHandler = function() {
       var routeParams = {};
       for (index in routeParamNames)
       {
-        routeParams[routeParamNames[index]] = typeConversionFns[routeParamTypes[index]](routeMatch[index]);
+        typeConvert = typeConversionFns[routeParamTypes[index]];
+        typedRouteParam = typeConvert(routeMatch[index])
+        routeParams[routeParamNames[index]] = typedRouteParam;
       }
 
       routeAction(routeParams);
