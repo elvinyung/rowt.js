@@ -43,7 +43,7 @@ var routeHandler = function() {
 
 };
 
-var addRoute = function(route, routeAction) {
+var addRouteToRouteObj = function(route, routeAction) {
   var routeRegex = '^';
   var routeParamNames = [];
   var routeParamTypes = [];
@@ -93,12 +93,23 @@ var rowt = function(routes) {
   {
     throw "onhashchange not supported in this browser";
   }
-
-  // convert each route rule into a regex
-  for (route in routes)
-  {
-    addRoute(route, routes[route]);
-  }
-
+  
   window.onhashchange = routeHandler;
+  
+  return {
+    // init: 
+    init: function(routes) {
+      // convert each route rule into a regex
+      for (route in routes)
+      {
+        addRouteToRouteObj(route, routes[route]);
+      }
+    },
+    addRoute: function(route, routeAction) {
+      addRouteToRouteObj(route, routeAction);
+    },
+    removeRoute: function(route) {
+      routeObject[route] = null;
+    }
+  }
 };
