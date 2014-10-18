@@ -43,11 +43,7 @@ var routeHandler = function() {
 
 };
 
-<<<<<<< HEAD
 var registerRoute = function(route, routeAction) {
-=======
-var addRouteToRouteObj = function(route, routeAction) {
->>>>>>> 9f5d96fc4fc091cb83d98ce932e475d8158711bb
   var routeRegex = '^';
   var routeParamNames = [];
   var routeParamTypes = [];
