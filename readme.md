@@ -7,4 +7,10 @@ Clienside JS hash routing thing.
 ## Instructions
 Include `rowt.js` somewhere in your webpage.
 
-Initialize routing by calling `rowt()` with an object in which each key is a routing rule (a string in the format of `/word/:parameter`), paired with a function which takes in a `routeParams` argument.
+Initialize routing by attaching `initRowt()` to a variable. This returns an object containing the routing methods (see **Routing Functions**, below).
+
+## Routing Functions
+* `addRoute(route, routeAction)`: Registers the route `route`, a string, to `routeAction`, a function which consumes an object of route parameters.
+* `addRoutes(routeDict)`: Registers all route-action pairs (respectively a string and a function).
+* `removeRoute(route)`: Removes the route action function associated with the given `route` string.
+* `getRoute(route)`: Returns the route action function associated with the given `route` string.

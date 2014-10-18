@@ -1,6 +1,6 @@
 // rowt.js - a simple URL router. 
 
-var routeObject = {};
+var _routeObject;
 
 var typeConversionFns = {
   'int': parseInt,
@@ -16,11 +16,11 @@ var typeConversionFns = {
 var routeHandler = function() {
   urlHash = location.hash.substring(1).trim();
 
-  for (routeRegex in routeObject)
+  for (routeRegex in _routeObject)
   {
-    var routeParamNames = routeObject[routeRegex][0];
-    var routeParamTypes = routeObject[routeRegex][1];
-    var routeAction = routeObject[routeRegex][2];
+    var routeParamNames = _routeObject[routeRegex][0];
+    var routeParamTypes = _routeObject[routeRegex][1];
+    var routeAction = _routeObject[routeRegex][2];
     var routeRegex = new RegExp(routeRegex);
 
     var routeMatch = routeRegex.exec(urlHash);
@@ -43,7 +43,7 @@ var routeHandler = function() {
 
 };
 
-var addRoute = function(route, routeAction) {
+var registerRoute = function(route, routeAction) {
   var routeRegex = '^';
   var routeParamNames = [];
   var routeParamTypes = [];
@@ -85,20 +85,35 @@ var addRoute = function(route, routeAction) {
   }
   routeRegex += '$';
 
-  routeObject[routeRegex] = [routeParamNames, routeParamTypes, routeAction];
+  _routeObject[routeRegex] = [routeParamNames, routeParamTypes, routeAction];
 }
 
-var rowt = function(routes) {
+var initRowt = function() {
   if (!("onhashchange" in window))
   {
     throw "onhashchange not supported in this browser";
   }
 
-  // convert each route rule into a regex
-  for (route in routes)
-  {
-    addRoute(route, routes[route]);
-  }
-
+  _routeObject = _routeObject || {};
   window.onhashchange = routeHandler;
+
+  return {
+    addRoute: function(route, routeAction) {
+      registerRoute(route, routeAction);
+    },
+    addRoutes: function(routeDict) {
+      for (route in routeDict) {
+        registerRoute(route, routeDict[route]);
+      }
+    },
+    removeRoute: function(route) {
+      if (!_routeObject[route]) {
+        return;
+      };
+      delete _routeObject[route]; 
+    },
+    getRoute: function(route) {
+      return _routeObject[route];
+    }
+  };
 };
