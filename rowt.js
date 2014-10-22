@@ -1,6 +1,7 @@
 // rowt.js - a simple URL router. 
 
 var _routeObject;
+var _routeIgnore = ['_'];
 
 var typeConversionFns = {
   'int': parseInt,
@@ -37,7 +38,7 @@ var routeHandler = function() {
       }
 
       routeAction(routeParams);
-      break;
+      return;
     }
   }
 
@@ -72,6 +73,15 @@ var registerRoute = function(route, routeAction) {
       else
       {
         routeRegex += '([^\/]+)';
+      }
+    }
+    else if (token[0] == '{' && token[token.length-1] == '}')
+    {
+      //handle `{param}` cases
+      var regexStr = token(1, token.length-1);
+      if (!!(new Regexp(regexStr)))
+      {
+        routeRegex += regexStr;
       }
     }
     else if (!token)
@@ -114,6 +124,9 @@ var initRowt = function() {
     },
     getRoute: function(route) {
       return _routeObject[route];
+    },
+    otherwiseRoute: function(routeAction) {
+      _routeObject.otherwise = routeAction;
     }
   };
 };

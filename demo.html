@@ -18,12 +18,12 @@
         alert(routeParams.a + '+' + routeParams.b + '=' + (routeParams.a + routeParams.b));
       }
 
-      var rowt = initRowt();
-      rowt.addRoutes({
+      var router = initRowt();
+      router.addRoutes({
         '/test': simpleAlert,
         '/test/:id': showIdAlert
       });
-      rowt.addRoute('/add/int:a/int:b', showAddAlert);
+      router.addRoute('/add/int:a/int:b', showAddAlert);
     </script>
   </head>
   <body>
