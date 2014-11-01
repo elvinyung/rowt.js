@@ -83,6 +83,10 @@ var registerRoute = function(route, routeAction) {
       {
         routeRegex += regexStr;
       }
+      else
+      {
+        throw 'invalid regex literal';
+      }
     }
     else if (!token)
     {
