@@ -49,6 +49,12 @@ var registerRoute = function(route, routeAction) {
   var routeParamNames = [];
   var routeParamTypes = [];
 
+  var routeRegexTypes = {
+    'int': '(\\d+)',
+    'float': '(\\d+\.\\d+)',
+    'any': '([^\/]+)'
+  };
+
   var routeTokens = route.split('/');
   for (token in routeTokens)
   {
@@ -56,24 +62,12 @@ var registerRoute = function(route, routeAction) {
     if (token.indexOf(':') != -1)
     {
       token = token.split(':');
-      var paramType = token[0];
+      var paramType = token[0] || 'any';
       var paramName = token[1];
       routeParamNames.push(paramName);
-      routeParamTypes.push(paramType || 'any');
+      routeParamTypes.push(paramType);
       
-      routeRegex += '\/';
-      if (paramType == 'int')
-      {
-         routeRegex += '(\\d+)';
-      }
-      else if (paramType == 'float')
-      {
-        routeRegex += '(\\d+\.\\d+)';
-      }
-      else
-      {
-        routeRegex += '([^\/]+)';
-      }
+      routeRegex += '\/' + routeRegexTypes[paramType];
     }
     else if (token[0] == '{' && token[token.length-1] == '}')
     {
