@@ -32,6 +32,7 @@ var routeHandler = function() {
       var routeParams = {};
       for (index in routeParamNames)
       {
+        // convert route params to type
         typeConvert = typeConversionFns[routeParamTypes[index]];
         routeParamVal = typeConvert(routeMatch[index])
         routeParams[routeParamNames[index]] = routeParamVal;
@@ -59,7 +60,7 @@ var registerRoute = function(route, routeAction) {
   for (token in routeTokens)
   {
     token = routeTokens[token];
-    if (token.indexOf(':') != -1)
+    if (':' in token)
     {
       token = token.split(':');
       var paramType = token[0] || 'any';
