@@ -55,6 +55,8 @@ var registerRoute = function(route, routeAction) {
     'float': '(\\d+\.\\d+)',
     'any': '([^\/]+)'
   };
+  
+  var tokenMatch;
 
   var routeTokens = route.split('/');
   for (token in routeTokens)
@@ -70,10 +72,10 @@ var registerRoute = function(route, routeAction) {
       
       routeRegex += '\/' + routeRegexTypes[paramType];
     }
-    else if (token[0] == '{' && token[token.length-1] == '}')
+    else if (tokenMatch = /\{([^\{\}]+)\}/.exec(token))
     {
       //handle `{param}` cases
-      var regexStr = token(1, token.length-1);
+      var regexStr = tokenMatch[1];
       if (!!(new Regexp(regexStr)))
       {
         routeRegex += regexStr;
