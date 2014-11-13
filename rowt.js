@@ -74,14 +74,10 @@ var registerRoute = function(route, routeAction) {
     {
       //handle `{param}` cases
       var regexStr = token(1, token.length-1);
-      if (!!(new Regexp(regexStr)))
-      {
-        routeRegex += regexStr;
-      }
-      else
-      {
-        throw 'invalid regex literal';
-      }
+      
+      (!!(new Regexp(regexStr))) ? 
+        routeRegex += regexStr :
+        (function(){throw 'invalid regex literal';})();
     }
     else if (!token)
     {
